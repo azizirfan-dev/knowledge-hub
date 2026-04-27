@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "description": "Retrieval eval dataset. Composite chunk key: (source, page, start_index). Types: 'synthetic' (auto-generated from chunks) or 'labeled' (captured via admin Interactive Probe).",
+  "questions": [
+    {
+      "id": "hr-seed-001",
+      "question": "Berapa lama cuti untuk ibadah haji di KnowledgeHub?",
+      "kb": "hr",
+      "type": "labeled",
+      "expected_agent": "HR_AGENT",
+      "expected_chunks": [
+        {
+          "source": "Kebijakan_Cuti_dan_Izin_Karyawan.pdf",
+          "page": 2,
+          "start_index": 0,
+          "content_snippet": "Ibadah Haji: 45 hari"
+        }
+      ]
+    },
+    {
+      "id": "hr-seed-002",
+      "question": "Kapan cuti tahunan yang tidak terpakai akan hangus?",
+      "kb": "hr",
+      "type": "labeled",
+      "expected_agent": "HR_AGENT",
+      "expected_chunks": [
+        {
+          "source": "Kebijakan_Cuti_dan_Izin_Karyawan.pdf",
+          "page": 0,
+          "start_index": 1260,
+          "content_snippet": "hangus pada 31 Desember"
+        }
+      ]
+    },
+    {
+      "id": "tech-seed-001",
+      "question": "Apa endpoint untuk mendapatkan access token di API Gateway?",
+      "kb": "technical",
+      "type": "labeled",
+      "expected_agent": "TECHNICAL_AGENT",
+      "expected_chunks": [
+        {
+          "source": "Dokumentasi_Teknis_API_Gateway.pdf",
+          "page": 1,
+          "start_index": 0,
+          "content_snippet": "POST /auth/token"
+        }
+      ]
+    }
+  ]
+}

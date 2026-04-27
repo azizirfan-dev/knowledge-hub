@@ -1,0 +1,348 @@
+{
+  "run_timestamp": "2026-04-27T11:24:16.355288+00:00",
+  "dataset_size": 3,
+  "aggregate": {
+    "hit_at_4": 1.0,
+    "hit_at_8": 1.0,
+    "mrr_at_4": 0.75,
+    "n": 3
+  },
+  "by_group": [
+    {
+      "hit_at_4": 1.0,
+      "hit_at_8": 1.0,
+      "mrr_at_4": 1.0,
+      "kb": "hr",
+      "type": "labeled",
+      "n": 2
+    },
+    {
+      "hit_at_4": 1.0,
+      "hit_at_8": 1.0,
+      "mrr_at_4": 0.25,
+      "kb": "technical",
+      "type": "labeled",
+      "n": 1
+    }
+  ],
+  "per_question": [
+    {
+      "id": "hr-seed-001",
+      "question": "Berapa lama cuti untuk ibadah haji di KnowledgeHub?",
+      "kb": "hr",
+      "type": "labeled",
+      "expected": [
+        {
+          "source": "Kebijakan_Cuti_dan_Izin_Karyawan.pdf",
+          "page": 2,
+          "start_index": 0,
+          "content_snippet": "Ibadah Haji: 45 hari"
+        }
+      ],
+      "retrieved_at_8": [
+        {
+          "source": "Kebijakan_Cuti_dan_Izin_Karyawan.pdf",
+          "page": 2,
+          "start_index": 0,
+          "preview": "2.5 Cuti Ibadah\nKnowledgeHub memberikan hak cuti ibadah kepada karyawan yang ingin menjalankan kewajiban\nkeagamaan. Ketentuan:\n Ibadah Haji: 45 hari kalender, diberikan 1 kali selama masa kerja. Waji",
+          "similarity_score": 0.77365196
+        },
+        {
+          "source": "Kebijakan_Cuti_dan_Izin_Karyawan.pdf",
+          "page": 1,
+          "start_index": 0,
+          "preview": "Karyawan yang tidak dapat bekerja karena alasan kesehatan berhak atas cuti sakit. Ketentuan yang\nberlaku:\n Cuti sakit 1–2 hari: cukup lapor melalui Slack kepada atasan langsung dan HR paling lambat\np",
+          "similarity_score": 0.4623691
+        },
+        {
+          "source": "SOP_Onboarding_Karyawan_Baru.pdf",
+          "page": 1,
+          "start_index": 1181,
+          "preview": "Makan siang bersama tim (welcome lunch)\nTeam Lead\n13.00 – 15.00\nSetup perangkat kerja: laptop, akun, tools, dan akses sistem\nIT Support\n15.00 – 16.00\nPenjelasan kebijakan perusahaan (cuti, absensi, co",
+          "similarity_score": 0.4472044
+        },
+        {
+          "source": "SOP_Onboarding_Karyawan_Baru.pdf",
+          "page": 0,
+          "start_index": 0,
+          "preview": "KnowledgeHub Internal\n HR-SOP-001 | Rev. 3.0 | Jan 2025\n SOP Onboarding Karyawan Baru\n Standar Operasional Prosedur | Departemen Human Resources\nDokumen\nSOP-HR-001\nVersi\n3.0\nTanggal Berlaku\n1 Januari ",
+          "similarity_score": 0.443905
+        },
+        {
+          "source": "Kebijakan_Cuti_dan_Izin_Karyawan.pdf",
+          "page": 0,
+          "start_index": 1260,
+          "preview": " Cuti tahunan yang melebihi batas carry over akan hangus pada 31 Desember setiap tahunnya.\n Pengajuan cuti tahunan harus dilakukan minimal 3 hari kerja sebelumnya melalui HRIS.\n2.2 Cuti Sakit",
+          "similarity_score": 0.43992352
+        },
+        {
+          "source": "Kebijakan_Cuti_dan_Izin_Karyawan.pdf",
+          "page": 1,
+          "start_index": 1300,
+          "preview": "2 hari kerja\nSurat undangan\nKhitanan / baptis anak\n2 hari kerja\nSurat keterangan\nKematian suami / istri / anak\n4 hari kerja\nSurat kematian\nKematian orang tua / mertua\n3 hari kerja\nSurat kematian\nKemat",
+          "similarity_score": 0.43667644
+        },
+        {
+          "source": "SOP_Onboarding_Karyawan_Baru.pdf",
+          "page": 1,
+          "start_index": 0,
+          "preview": "4.1 Sebelum Hari Pertama (Pre-Onboarding)\nPersiapan administratif dan teknis harus diselesaikan H-3 sebelum karyawan baru masuk. Tim HR\nbertanggung jawab atas kelengkapan dokumen, sementara tim IT men",
+          "similarity_score": 0.43211874
+        },
+        {
+          "source": "Kebijakan_Cuti_dan_Izin_Karyawan.pdf",
+          "page": 0,
+          "start_index": 0,
+          "preview": "KnowledgeHub Internal\n HR-POL-002 | Rev. 5.1 | Mar 2025\n Kebijakan Cuti dan Izin Karyawan\n Kebijakan Resmi | Departemen Human Resources — KnowledgeHub\nNomor Kebijakan\nHR-POL-002\nVersi\n5.1\nBerlaku Seja",
+          "similarity_score": 0.43082204
+        }
+      ],
+      "retrieved_at_4": [
+        {
+          "source": "Kebijakan_Cuti_dan_Izin_Karyawan.pdf",
+          "page": 2,
+          "start_index": 0,
+          "preview": "2.5 Cuti Ibadah\nKnowledgeHub memberikan hak cuti ibadah kepada karyawan yang ingin menjalankan kewajiban\nkeagamaan. Ketentuan:\n Ibadah Haji: 45 hari kalender, diberikan 1 kali selama masa kerja. Waji",
+          "rerank_score": 0.7736520171165466
+        },
+        {
+          "source": "Kebijakan_Cuti_dan_Izin_Karyawan.pdf",
+          "page": 1,
+          "start_index": 0,
+          "preview": "Karyawan yang tidak dapat bekerja karena alasan kesehatan berhak atas cuti sakit. Ketentuan yang\nberlaku:\n Cuti sakit 1–2 hari: cukup lapor melalui Slack kepada atasan langsung dan HR paling lambat\np",
+          "rerank_score": 0.4623691439628601
+        },
+        {
+          "source": "SOP_Onboarding_Karyawan_Baru.pdf",
+          "page": 1,
+          "start_index": 1181,
+          "preview": "Makan siang bersama tim (welcome lunch)\nTeam Lead\n13.00 – 15.00\nSetup perangkat kerja: laptop, akun, tools, dan akses sistem\nIT Support\n15.00 – 16.00\nPenjelasan kebijakan perusahaan (cuti, absensi, co",
+          "rerank_score": 0.4472044110298157
+        },
+        {
+          "source": "SOP_Onboarding_Karyawan_Baru.pdf",
+          "page": 0,
+          "start_index": 0,
+          "preview": "KnowledgeHub Internal\n HR-SOP-001 | Rev. 3.0 | Jan 2025\n SOP Onboarding Karyawan Baru\n Standar Operasional Prosedur | Departemen Human Resources\nDokumen\nSOP-HR-001\nVersi\n3.0\nTanggal Berlaku\n1 Januari ",
+          "rerank_score": 0.4439050555229187
+        }
+      ],
+      "hit_at_8": true,
+      "hit_at_4": true,
+      "rank_in_post4": 1,
+      "snippet_warnings": []
+    },
+    {
+      "id": "hr-seed-002",
+      "question": "Kapan cuti tahunan yang tidak terpakai akan hangus?",
+      "kb": "hr",
+      "type": "labeled",
+      "expected": [
+        {
+          "source": "Kebijakan_Cuti_dan_Izin_Karyawan.pdf",
+          "page": 0,
+          "start_index": 1260,
+          "content_snippet": "hangus pada 31 Desember"
+        }
+      ],
+      "retrieved_at_8": [
+        {
+          "source": "Kebijakan_Cuti_dan_Izin_Karyawan.pdf",
+          "page": 0,
+          "start_index": 1260,
+          "preview": " Cuti tahunan yang melebihi batas carry over akan hangus pada 31 Desember setiap tahunnya.\n Pengajuan cuti tahunan harus dilakukan minimal 3 hari kerja sebelumnya melalui HRIS.\n2.2 Cuti Sakit",
+          "similarity_score": 0.5677782
+        },
+        {
+          "source": "Kebijakan_Cuti_dan_Izin_Karyawan.pdf",
+          "page": 2,
+          "start_index": 0,
+          "preview": "2.5 Cuti Ibadah\nKnowledgeHub memberikan hak cuti ibadah kepada karyawan yang ingin menjalankan kewajiban\nkeagamaan. Ketentuan:\n Ibadah Haji: 45 hari kalender, diberikan 1 kali selama masa kerja. Waji",
+          "similarity_score": 0.47381216
+        },
+        {
+          "source": "Kebijakan_Cuti_dan_Izin_Karyawan.pdf",
+          "page": 0,
+          "start_index": 604,
+          "preview": "2. Jenis-Jenis Cuti dan Hak Karyawan\n2.1 Cuti Tahunan\nCuti tahunan adalah hak dasar setiap karyawan tetap yang telah melewati masa percobaan\n(probasi). Ketentuan cuti tahunan adalah sebagai berikut:\nM",
+          "similarity_score": 0.36105022
+        },
+        {
+          "source": "Kebijakan_Cuti_dan_Izin_Karyawan.pdf",
+          "page": 1,
+          "start_index": 1300,
+          "preview": "2 hari kerja\nSurat undangan\nKhitanan / baptis anak\n2 hari kerja\nSurat keterangan\nKematian suami / istri / anak\n4 hari kerja\nSurat kematian\nKematian orang tua / mertua\n3 hari kerja\nSurat kematian\nKemat",
+          "similarity_score": 0.3574978
+        },
+        {
+          "source": "Kebijakan_Cuti_dan_Izin_Karyawan.pdf",
+          "page": 1,
+          "start_index": 648,
+          "preview": "2.3 Cuti Melahirkan dan Cuti Ayah\nJenis Cuti\nDurasi\nSyarat\nKeterangan\nCuti Melahirkan (Ibu)\n90 hari kalender\nSurat keterangan dokter / bidan\nDibayar penuh\nCuti Melahirkan (Keguguran)\n45 hari kalender\n",
+          "similarity_score": 0.34219557
+        },
+        {
+          "source": "Kebijakan_Cuti_dan_Izin_Karyawan.pdf",
+          "page": 0,
+          "start_index": 0,
+          "preview": "KnowledgeHub Internal\n HR-POL-002 | Rev. 5.1 | Mar 2025\n Kebijakan Cuti dan Izin Karyawan\n Kebijakan Resmi | Departemen Human Resources — KnowledgeHub\nNomor Kebijakan\nHR-POL-002\nVersi\n5.1\nBerlaku Seja",
+          "similarity_score": 0.3076933
+        },
+        {
+          "source": "Kebijakan_Cuti_dan_Izin_Karyawan.pdf",
+          "page": 1,
+          "start_index": 0,
+          "preview": "Karyawan yang tidak dapat bekerja karena alasan kesehatan berhak atas cuti sakit. Ketentuan yang\nberlaku:\n Cuti sakit 1–2 hari: cukup lapor melalui Slack kepada atasan langsung dan HR paling lambat\np",
+          "similarity_score": 0.30204636
+        },
+        {
+          "source": "SOP_Onboarding_Karyawan_Baru.pdf",
+          "page": 1,
+          "start_index": 564,
+          "preview": "H-5\n5\nSiapkan meja dan area kerja karyawan baru\nHR GA\nH-1\n6\nKonfirmasi ulang jadwal orientasi kepada semua peserta\nHR Recruiter\nH-1\n4.2 Hari Pertama\nHari pertama adalah kesan pertama karyawan terhadap",
+          "similarity_score": 0.30188787
+        }
+      ],
+      "retrieved_at_4": [
+        {
+          "source": "Kebijakan_Cuti_dan_Izin_Karyawan.pdf",
+          "page": 0,
+          "start_index": 1260,
+          "preview": " Cuti tahunan yang melebihi batas carry over akan hangus pada 31 Desember setiap tahunnya.\n Pengajuan cuti tahunan harus dilakukan minimal 3 hari kerja sebelumnya melalui HRIS.\n2.2 Cuti Sakit",
+          "rerank_score": 0.5677782297134399
+        },
+        {
+          "source": "Kebijakan_Cuti_dan_Izin_Karyawan.pdf",
+          "page": 2,
+          "start_index": 0,
+          "preview": "2.5 Cuti Ibadah\nKnowledgeHub memberikan hak cuti ibadah kepada karyawan yang ingin menjalankan kewajiban\nkeagamaan. Ketentuan:\n Ibadah Haji: 45 hari kalender, diberikan 1 kali selama masa kerja. Waji",
+          "rerank_score": 0.47381213307380676
+        },
+        {
+          "source": "Kebijakan_Cuti_dan_Izin_Karyawan.pdf",
+          "page": 0,
+          "start_index": 604,
+          "preview": "2. Jenis-Jenis Cuti dan Hak Karyawan\n2.1 Cuti Tahunan\nCuti tahunan adalah hak dasar setiap karyawan tetap yang telah melewati masa percobaan\n(probasi). Ketentuan cuti tahunan adalah sebagai berikut:\nM",
+          "rerank_score": 0.3610501289367676
+        },
+        {
+          "source": "Kebijakan_Cuti_dan_Izin_Karyawan.pdf",
+          "page": 1,
+          "start_index": 1300,
+          "preview": "2 hari kerja\nSurat undangan\nKhitanan / baptis anak\n2 hari kerja\nSurat keterangan\nKematian suami / istri / anak\n4 hari kerja\nSurat kematian\nKematian orang tua / mertua\n3 hari kerja\nSurat kematian\nKemat",
+          "rerank_score": 0.35749778151512146
+        }
+      ],
+      "hit_at_8": true,
+      "hit_at_4": true,
+      "rank_in_post4": 1,
+      "snippet_warnings": []
+    },
+    {
+      "id": "tech-seed-001",
+      "question": "Apa endpoint untuk mendapatkan access token di API Gateway?",
+      "kb": "technical",
+      "type": "labeled",
+      "expected": [
+        {
+          "source": "Dokumentasi_Teknis_API_Gateway.pdf",
+          "page": 1,
+          "start_index": 0,
+          "content_snippet": "POST /auth/token"
+        }
+      ],
+      "retrieved_at_8": [
+        {
+          "source": "Dokumentasi_Teknis_API_Gateway.pdf",
+          "page": 1,
+          "start_index": 689,
+          "preview": "sesuai dengan endpoint yang akan dipanggil:\nScope\nDeskripsi\nContoh Endpoint yang Diizinkan\nread\nHanya bisa membaca data\nGET /users, GET /documents\nwrite\nBisa membuat dan mengubah data\nPOST /documents,",
+          "similarity_score": 0.4672494
+        },
+        {
+          "source": "Dokumentasi_Teknis_API_Gateway.pdf",
+          "page": 3,
+          "start_index": 654,
+          "preview": "Lihat riwayat versi dokumen\nread\n5.2 User Service\nMethod\nEndpoint\nDeskripsi\nScope\nGET\n/users\nAmbil daftar user aktif\nread\nGET\n/users/{id}\nAmbil profil user berdasarkan ID atau email\nread\nPUT\n/users/{i",
+          "similarity_score": 0.42996246
+        },
+        {
+          "source": "Dokumentasi_Teknis_API_Gateway.pdf",
+          "page": 3,
+          "start_index": 0,
+          "preview": "5. Endpoint Utama yang Tersedia\nBerikut adalah endpoint-endpoint utama yang sering digunakan oleh tim internal. Dokumentasi\nlengkap tersedia di portal developer: developer.knowledgehub.id/docs.\n5.1 Do",
+          "similarity_score": 0.41190284
+        },
+        {
+          "source": "Dokumentasi_Teknis_API_Gateway.pdf",
+          "page": 1,
+          "start_index": 0,
+          "preview": "POST /auth/token Request Body (JSON): { \"client_id\": \"your-service-client-id\",\n\"client_secret\": \"your-client-secret\", \"grant_type\": \"client_credentials\", \"scope\": \"read\nwrite\" } Response (200 OK): { \"",
+          "similarity_score": 0.39672998
+        },
+        {
+          "source": "Dokumentasi_Teknis_API_Gateway.pdf",
+          "page": 0,
+          "start_index": 0,
+          "preview": "KnowledgeHub Engineering\n TECH-DOC-007 | v2.3.0 | Feb 2025\n Dokumentasi Teknis: API Gateway\n Panduan Developer Internal | Tim Platform Engineering — KnowledgeHub\nNomor Dokumen\nTECH-DOC-007\nVersi\n2.3.0",
+          "similarity_score": 0.39451495
+        },
+        {
+          "source": "Dokumentasi_Teknis_API_Gateway.pdf",
+          "page": 0,
+          "start_index": 695,
+          "preview": "Base URL:\nEnvironment\nBase URL\nStatus\nProduction\nhttps://api.knowledgehub.id/v2\nActive\nStaging\nhttps://api-staging.knowledgehub.id/v2\nActive\nDevelopment\nhttps://api-dev.knowledgehub.id/v2\nActive\nLocal",
+          "similarity_score": 0.389485
+        },
+        {
+          "source": "Dokumentasi_Teknis_API_Gateway.pdf",
+          "page": 1,
+          "start_index": 1345,
+          "preview": "1.000 req/jam\n10.000 req/hari\nEnvironment development\nStandard\n300 req/menit\n10.000 req/jam\n100.000 req/hari\nService produksi standar\nPremium\n1.000 req/menit\n50.000 req/jam\n500.000 req/hari\nService hi",
+          "similarity_score": 0.2903505
+        },
+        {
+          "source": "Dokumentasi_Teknis_API_Gateway.pdf",
+          "page": 2,
+          "start_index": 664,
+          "preview": "Gunakan PUT atau PATCH alih-alih POST\n422\nVALIDATION_ERROR\nData valid secara sintaks tapi gagal validasi bisnis\nPeriksa pesan error detail\n429\nRATE_LIMIT_EXCEEDED\nTerlalu banyak request dalam waktu si",
+          "similarity_score": 0.26626688
+        }
+      ],
+      "retrieved_at_4": [
+        {
+          "source": "Dokumentasi_Teknis_API_Gateway.pdf",
+          "page": 1,
+          "start_index": 689,
+          "preview": "sesuai dengan endpoint yang akan dipanggil:\nScope\nDeskripsi\nContoh Endpoint yang Diizinkan\nread\nHanya bisa membaca data\nGET /users, GET /documents\nwrite\nBisa membuat dan mengubah data\nPOST /documents,",
+          "rerank_score": 0.46724942326545715
+        },
+        {
+          "source": "Dokumentasi_Teknis_API_Gateway.pdf",
+          "page": 3,
+          "start_index": 654,
+          "preview": "Lihat riwayat versi dokumen\nread\n5.2 User Service\nMethod\nEndpoint\nDeskripsi\nScope\nGET\n/users\nAmbil daftar user aktif\nread\nGET\n/users/{id}\nAmbil profil user berdasarkan ID atau email\nread\nPUT\n/users/{i",
+          "rerank_score": 0.42996251583099365
+        },
+        {
+          "source": "Dokumentasi_Teknis_API_Gateway.pdf",
+          "page": 3,
+          "start_index": 0,
+          "preview": "5. Endpoint Utama yang Tersedia\nBerikut adalah endpoint-endpoint utama yang sering digunakan oleh tim internal. Dokumentasi\nlengkap tersedia di portal developer: developer.knowledgehub.id/docs.\n5.1 Do",
+          "rerank_score": 0.41190284490585327
+        },
+        {
+          "source": "Dokumentasi_Teknis_API_Gateway.pdf",
+          "page": 1,
+          "start_index": 0,
+          "preview": "POST /auth/token Request Body (JSON): { \"client_id\": \"your-service-client-id\",\n\"client_secret\": \"your-client-secret\", \"grant_type\": \"client_credentials\", \"scope\": \"read\nwrite\" } Response (200 OK): { \"",
+          "rerank_score": 0.3967299461364746
+        }
+      ],
+      "hit_at_8": true,
+      "hit_at_4": true,
+      "rank_in_post4": 4,
+      "snippet_warnings": []
+    }
+  ]
+}
