@@ -53,7 +53,7 @@ Dokumentasi cara kerja product dari ujung ke ujung. Format: pseudocode level fun
 | Frontend probe | `frontend/src/app/admin/probe/page.tsx` | Interactive retrieval probe |
 | API gateway | `api/main.py` | FastAPI: `/chat`, `/admin/eval/*`, `/admin/probe`, `/admin/dataset/label` |
 | Graph topology | `src/agents/graph.py` | Supervisor node + routing edges |
-| Per-agent execution | `src/agents/runner.py` | Bind tool, invoke LLM, handle tool call, stream |
+| Per-agent execution | `src/agents/runner.py` | Invoke tool deterministically (per agent), inject retrieved context into system prompt, stream LLM |
 | Agent registry | `src/agents/registry.py` + `src/agents/__init__.py` | Daftar agent: name, prompt, tool, collection |
 | LLM factory | `src/agents/llm.py` | HuggingFace endpoint + Langfuse callback |
 | RAG tool | `src/tools/rag_tool.py` | Qdrant similarity search + HF rerank |
@@ -140,15 +140,15 @@ User types        FE: POST /chat              API: _stream_response
                             ┌────────────────────────┴────────────────────┐
                             │                                              │
                   TECHNICAL/HR (has tool)                          GENERAL (no tool)
-                  1. invoke llm_with_tool                          1. astream(llm)
-                  2. if tool_calls:                                2. yield tokens
-                       run rag_search_*(query)                     3. yield done
-                       append ToolMessage
-                       parse sources from tool result
-                       yield tool_call {tool_name, sources}
-                  3. astream(llm) untuk jawab final
-                  4. yield tokens
-                  5. yield done {agent, collection, sources}
+                  1. extract last user query                       1. astream(llm)
+                  2. invoke spec.tool({"query": …})                2. yield tokens
+                     (deterministic — no LLM call)                 3. yield done
+                  3. parse sources from tool result
+                  4. yield tool_call {tool_name, sources}
+                  5. inject tool result into system prompt
+                  6. astream(llm) untuk jawab final
+                  7. yield tokens
+                  8. yield done {agent, collection, sources}
 
                                    ▲
                                    │ SSE event types (semua "data: <json>\n\n"):
@@ -271,43 +271,39 @@ Runner adalah satu-satunya tempat agent dieksekusi. Logikanya **sama** untuk syn
 
 ```pseudocode
 class AgentRunner(llm, window=6, callback_provider):
-    _bound = {}                                    # cache llm.bind_tools per agent
 
-    function _prepare(name, messages):
-        spec     = REGISTRY[name]                  # AgentSpec(prompt, tool, collection,...)
-        history  = messages[-6:]                   # sliding window
-        prepared = [SystemMessage(spec.system_prompt)] + history
-        llm_w_tool = llm.bind_tools([spec.tool]) if spec.tool else llm
-        return prepared, llm_w_tool
+    function _last_user_query(messages):
+        # Cari HumanMessage paling akhir; fallback ke role=="human"|"user".
+        return content of latest user message, else ""
+
+    function _prepare(name, messages, tool_context=None):
+        spec    = REGISTRY[name]                   # AgentSpec(prompt, tool, collection,...)
+        system  = spec.system_prompt
+        if tool_context:
+            system += "\n\n=== Retrieved context ===\n" + tool_context
+                   +  "\n=== End context ==="
+        history = messages[-6:]                    # sliding window
+        return [SystemMessage(system)] + history
 
     async function stream(agent_name, messages, callbacks):
-        msgs, llm_w_tool = _prepare(agent_name, messages)
         spec             = REGISTRY[agent_name]
         captured_sources = []
+        tool_context     = None
 
         if spec.tool is not None:
-            # ── ROUND 1: ask LLM, mungkin minta tool call ──
-            first = await to_thread(llm_w_tool.invoke, msgs)
-            if first.tool_calls:
-                tool_call   = first.tool_calls[0]
-                tool_result = await to_thread(spec.tool.invoke, tool_call.args)
-                msgs.append(first)
-                msgs.append(ToolMessage(tool_result, tool_call.id))
+            # ── Deterministic tool invocation (no "decide tool" LLM call) ──
+            query        = _last_user_query(messages)
+            tool_context = await to_thread(spec.tool.invoke, {"query": query})
 
-                # Parse [Source: file, halaman/chunk: N] dari tool_result (dedup)
-                captured_sources = _parse_sources(tool_result)
-                yield StreamEvent(tool_call,
-                                  tool_name=spec.tool.name,
-                                  collection=spec.collection,
-                                  sources=captured_sources)
-                # fall-through ke streaming round 2
-            else:
-                # LLM langsung jawab tanpa retrieval (rare path)
-                yield StreamEvent(token=first.content)
-                yield StreamEvent(done, agent=name, collection=spec.collection)
-                return
+            # Parse [Source: file, halaman/chunk: N] dari tool_result (dedup)
+            captured_sources = _parse_sources(tool_context)
+            yield StreamEvent(tool_call,
+                              tool_name=spec.tool.name,
+                              collection=spec.collection,
+                              sources=captured_sources)
 
-        # ── ROUND 2 (atau satu-satunya round untuk GENERAL): stream final answer ──
+        # Final answer — single LLM call, retrieved context disisipkan ke system prompt
+        msgs = _prepare(agent_name, messages, tool_context=tool_context)
         async for chunk in llm.astream(msgs):
             if chunk.content: yield StreamEvent(token=chunk.content)
         yield StreamEvent(done, agent=name, collection=spec.collection,
@@ -316,7 +312,9 @@ class AgentRunner(llm, window=6, callback_provider):
 
 Poin halus:
 - Window 6 turns dipakai **dua kali** (di supervisor dan di agent) — independen.
-- Tool dipanggil **satu kali per request** (`tool_calls[0]`). Tidak ada loop multi-tool.
+- Tool **tidak lagi di-bind** ke LLM. Setiap agent punya tepat 1 tool, jadi keputusan "panggil tool atau tidak" deterministik berdasarkan `spec.tool`. Ini menghilangkan 1 LLM round-trip per request (~5s di HF Inference API serverless).
+- Query yang dikirim ke RAG = pesan user terbaru apa adanya (tidak ada rephrasing oleh LLM).
+- Hasil retrieval diinjeksikan sebagai blok `=== Retrieved context ===` di akhir system prompt — bukan sebagai `ToolMessage` — agar konsisten dengan LLM yang tidak tahu schema tool.
 - Callback Langfuse di-flush di blok `finally` agar trace tidak hilang.
 
 ### 3.6 RAG Tool — `src/tools/rag_tool.py`
@@ -350,7 +348,7 @@ function _format(results):
     return  "\n\n---\n\n".join(parts) + "\n\n[SUMBER]: " + dedup(sources)
 ```
 
-LLM melihat hasil format ini sebagai `ToolMessage`, lalu menulis jawaban final yang menyertakan `Sumber: ...` (instruksi dari prompt).
+LLM melihat hasil format ini sebagai bagian dari **system prompt** (blok `=== Retrieved context ===`), lalu menulis jawaban final yang menyertakan `Sumber: ...` (instruksi dari prompt).
 
 Versi `retrieve_with_scores(collection, query)` mengembalikan **(pre, post)** dengan skor mentah — dipakai oleh eval dan endpoint `/admin/probe`. Identik dengan production tapi tidak melakukan formatting.
 
@@ -602,7 +600,7 @@ query  ──► HF embedding (384-dim)
        ──► HF sentence_similarity rerank        ◄── CROSS-ENCODER RERANK (Stage 2)
        ──► top-4 chunks
        ──► _format_results() → string + [SUMBER]: ...
-       ──► dikembalikan ke LLM sebagai ToolMessage
+       ──► diinjeksikan oleh runner ke system prompt sebagai blok "=== Retrieved context ==="
 ```
 
 | Parameter | Nilai | Lokasi | Catatan |

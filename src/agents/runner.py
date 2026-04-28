@@ -4,9 +4,20 @@ import re
 from dataclasses import dataclass, field
 from typing import AsyncIterator, Literal, Optional
 
-from langchain_core.messages import AIMessage, SystemMessage, ToolMessage
+from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 
 from src.agents.registry import REGISTRY
+
+
+def _last_user_query(messages: list) -> str:
+    for msg in reversed(messages):
+        if isinstance(msg, HumanMessage):
+            return msg.content if isinstance(msg.content, str) else str(msg.content)
+        role = getattr(msg, "type", None) or getattr(msg, "role", None)
+        if role in {"human", "user"}:
+            content = getattr(msg, "content", "")
+            return content if isinstance(content, str) else str(content)
+    return ""
 
 
 # Parses each chunk header in formatted RAG tool output:
@@ -45,21 +56,17 @@ class AgentRunner:
         self._llm = llm
         self._window = window
         self._cb_provider = callback_provider
-        self._bound: dict[str, object] = {}
 
-    def _llm_for(self, name: str):
+    def _prepare(self, name: str, messages: list, tool_context: str | None = None) -> list:
         spec = REGISTRY[name]
-        if spec.tool is None:
-            return self._llm
-        if name not in self._bound:
-            self._bound[name] = self._llm.bind_tools([spec.tool])
-        return self._bound[name]
-
-    def _prepare(self, name: str, messages: list) -> tuple[list, object]:
-        spec = REGISTRY[name]
+        system_content = spec.system_prompt
+        if tool_context:
+            system_content = (
+                f"{spec.system_prompt}\n\n"
+                f"=== Retrieved context ===\n{tool_context}\n=== End context ==="
+            )
         history = list(messages)[-self._window:]
-        prepared = [SystemMessage(content=spec.system_prompt)] + history
-        return prepared, self._llm_for(name)
+        return [SystemMessage(content=system_content)] + history
 
     def _resolve_callbacks(self, callbacks):
         if callbacks is not None:
@@ -83,24 +90,17 @@ class AgentRunner:
 
     def run(self, agent_name: str, messages: list, *, callbacks=None) -> AIMessage:
         spec = REGISTRY[agent_name]
-        msgs, llm_w_tool = self._prepare(agent_name, messages)
         cbs = self._resolve_callbacks(callbacks)
         cfg = {"callbacks": cbs} if cbs else {}
 
         try:
-            response = llm_w_tool.invoke(msgs, config=cfg)
+            tool_context = None
+            if spec.tool is not None:
+                query = _last_user_query(messages)
+                tool_context = spec.tool.invoke({"query": query})
 
-            if spec.tool is not None and getattr(response, "tool_calls", None):
-                tool_call = response.tool_calls[0]
-                tool_result = spec.tool.invoke(tool_call["args"])
-                msgs.append(response)
-                msgs.append(ToolMessage(
-                    content=tool_result,
-                    tool_call_id=tool_call["id"],
-                ))
-                final = self._llm.invoke(msgs, config=cfg)
-                return AIMessage(content=final.content)
-
+            msgs = self._prepare(agent_name, messages, tool_context=tool_context)
+            response = self._llm.invoke(msgs, config=cfg)
             return AIMessage(content=response.content)
         finally:
             self._flush(cbs)
@@ -111,43 +111,28 @@ class AgentRunner:
         import asyncio
 
         spec = REGISTRY[agent_name]
-        msgs, llm_w_tool = self._prepare(agent_name, messages)
         cbs = self._resolve_callbacks(callbacks)
         cfg = {"callbacks": cbs} if cbs else {}
 
         captured_sources: list[dict] = []
+        tool_context: str | None = None
         try:
-            stream_target = self._llm
             if spec.tool is not None:
-                first = await asyncio.to_thread(llm_w_tool.invoke, msgs, cfg)
-                if getattr(first, "tool_calls", None):
-                    tool_call = first.tool_calls[0]
-                    tool_result = await asyncio.to_thread(
-                        spec.tool.invoke, tool_call["args"]
-                    )
-                    msgs.append(first)
-                    msgs.append(ToolMessage(
-                        content=tool_result,
-                        tool_call_id=tool_call["id"],
-                    ))
-                    captured_sources = _parse_sources(tool_result)
-                    yield StreamEvent(
-                        kind="tool_call",
-                        agent=agent_name,
-                        tool_name=getattr(spec.tool, "name", ""),
-                        collection=spec.collection,
-                        sources=captured_sources,
-                    )
-                else:
-                    content = first.content or ""
-                    if content:
-                        yield StreamEvent(kind="token", token=content)
-                    yield StreamEvent(
-                        kind="done", agent=agent_name, collection=spec.collection
-                    )
-                    return
+                query = _last_user_query(messages)
+                tool_context = await asyncio.to_thread(
+                    spec.tool.invoke, {"query": query}
+                )
+                captured_sources = _parse_sources(tool_context)
+                yield StreamEvent(
+                    kind="tool_call",
+                    agent=agent_name,
+                    tool_name=getattr(spec.tool, "name", ""),
+                    collection=spec.collection,
+                    sources=captured_sources,
+                )
 
-            async for chunk in stream_target.astream(msgs, config=cfg):
+            msgs = self._prepare(agent_name, messages, tool_context=tool_context)
+            async for chunk in self._llm.astream(msgs, config=cfg):
                 token = chunk.content if hasattr(chunk, "content") else str(chunk)
                 if token:
                     yield StreamEvent(kind="token", token=token)
