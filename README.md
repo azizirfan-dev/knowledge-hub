@@ -184,8 +184,3 @@ Untuk istilah teknis (Hit@4, MRR, HNSW, dll), lihat **[Glosarium di WORKFLOW.md]
 
 ---
 
-## Catatan Keamanan
-
-- `.env` di-`.gitignore` — credential tidak masuk repo.
-- Sebelum demo / deploy ulang: rotate HF token, Qdrant API key, dan Langfuse keys.
-- File `.env.example` aman untuk di-commit (placeholder saja).
